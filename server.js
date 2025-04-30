@@ -26,15 +26,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// Sessions
+// Sessions - configured for production (Render)
 app.use(session({
-  secret: 'secureSession',
+  secret: process.env.SESSION_SECRET || 'fallback_secret_change_in_production',
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
+    // In production, cookies should only be sent over HTTPS
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    // Two weeks in milliseconds
+    maxAge: 14 * 24 * 60 * 60 * 1000,
+    // Important for hosting environments like Render
+    sameSite: 'lax'
   }
 }));
 

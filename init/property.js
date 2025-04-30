@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Property = require('../models/property'); // Adjust path if needed
 
 const MONGO_URI = 'mongodb://localhost:27017/securedwell2'; // Replace with your DB name
+// const MONGO_URI = 'mongodb+srv://admin:admin@cluster0.zqzqy.mongodb.net/securedwell2?retryWrites=true&w=majority&appName=Cluster0'; // Replace with your DB name
 
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
