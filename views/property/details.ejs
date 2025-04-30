@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= property.title %> - SecureDwell</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="/css/modern-theme.css"></link>
+  <style>
+    :root {
+      --bs-primary-rgb: 218, 165, 32;
+      --bs-primary-light: rgba(var(--bs-primary-rgb), 0.1);
+      
+      --gold-dark: #B8860B;
+      --gold-light: #F0E68C;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+    }
+    
+    .badge-feature {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 50px;
+      background-color: var(--bs-primary-light);
+      color: var(--gold);
+      border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .badge-feature:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.2);
+    }
+    
+    .image-thumbnail {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .image-thumbnail:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+    
+    .image-thumbnail.active {
+      border: 2px solid var(--gold);
+    }
+    
+    .card {
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .carousel-item {
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .property-action-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .property-action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .back-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+      transform: translateX(-5px);
+    }
+    
+    .document-card {
+      transition: all 0.3s ease;
+    }
+    
+    .document-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    #sellerInfo {
+      scroll-margin-top: 100px;
+    }
+    
+    .seller-icon {
+      background-color: var(--bs-primary-light);
+      color: var(--gold);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-size: 2.5rem;
+      box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.3);
+    }
+    
+    .accordion-button:not(.collapsed) {
+      color: var(--gold);
+      background-color: var(--bs-primary-light);
+    }
+    
+    .accordion-button:focus {
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    }
+    
+    .gallery-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1050;
+    }
+    
+    .gallery-content {
+      max-width: 90%;
+      max-height: 90%;
+    }
+    
+    .gallery-content img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+    
+    .gallery-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    
+    .gallery-nav {
+      position: absolute;
+      color: white;
+      font-size: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+    
+    .gallery-nav:hover {
+      opacity: 1;
+    }
+    
+    .gallery-prev {
+      left: 20px;
+    }
+    
+    .gallery-next {
+      right: 20px;
+    }
+    
+    /* Custom sticky behavior for price card */
+    .price-card-wrapper {
+      position: relative;
+    }
+    
+    .price-card-sticky {
+      position: sticky;
+      top: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    /* When scrolled to seller info, disable sticky */
+    .price-card-relative {
+      position: relative;
+      top: auto;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container py-5">
+    <!-- Property Title -->
+    <div class="mb-4 animate__animated animate__fadeIn">
+      <h1 class="display-5 fw-bold"><%= property.title %></h1>
+      <p class="lead">
+        <i class="bi bi-geo-alt-fill text-warning me-2"></i><%= property.location %>
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Main Content -->
+      <div class="col-lg-8 animate__animated animate__fadeInUp">
+        <!-- Images Carousel -->
+        <div class="card border-0 shadow-sm rounded-3 mb-4 overflow-hidden">
+          <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <% if (property.images && property.images.length > 0) { %>
+                <% property.images.forEach((img, index) => { %>
+                  <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                    <img src="<%= img %>" class="d-block w-100 gallery-img" alt="Property Image <%= index + 1 %>" style="height: 500px; object-fit: cover;" onclick="openGallery(<%= index %>)">
+                    <div class="carousel-caption d-none d-md-block">
+                      <span class="badge bg-warning rounded-pill px-3 py-2">Image <%= index + 1 %> of <%= property.images.length %></span>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="carousel-item active">
+                  <img src="https://via.placeholder.com/1200x600?text=No+Image+Available" class="d-block w-100" alt="No Image" style="height: 500px; object-fit: cover;">
+                </div>
+              <% } %>
+            </div>
+            <% if (property.images && property.images.length > 1) { %>
+              <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            <% } %>
+          </div>
+          
+          <!-- Image Thumbnails -->
+          <% if (property.images && property.images.length > 1 && property.images[0] !== 'none') { %>
+            <div class="d-flex overflow-auto p-3 bg-light">
+              <% property.images.forEach((img, index) => { %>
+                <div class="image-thumbnail mx-2 <%= index === 0 ? 'active' : '' %>" onclick="showImage(<%= index %>)">
+                  <img src="<%= img %>" alt="Thumbnail" class="rounded" style="width: 100px; height: 70px; object-fit: cover;">
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Property Details Accordion -->
+        <div class="accordion shadow-sm rounded-3 mb-4" id="propertyAccordion">
+          <!-- Description Section -->
+          <div class="accordion-item border-0">
+            <h2 class="accordion-header" id="headingDescription">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDescription" aria-expanded="true" aria-controls="collapseDescription">
+                <i class="bi bi-info-circle me-2"></i>Property Description
+              </button>
+            </h2>
+            <div id="collapseDescription" class="accordion-collapse collapse show" aria-labelledby="headingDescription" data-bs-parent="#propertyAccordion">
+              <div class="accordion-body">
+                <p class="lead mb-3"><%= property.description %></p>
+                
+                <div class="row mt-4">
+                  <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-building text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Bedrooms</h6>
+                        <p class="mb-0"><%= property.bedrooms %></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-water text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Bathrooms</h6>
+                        <p class="mb-0"><%= property.bathrooms %></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-rulers text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Square Feet</h6>
+                        <p class="mb-0"><%= property.squareFeet %></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Location Section (Placeholder) -->
+          <div class="accordion-item border-0">
+            <h2 class="accordion-header" id="headingLocation">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLocation" aria-expanded="false" aria-controls="collapseLocation">
+                <i class="bi bi-geo-alt me-2"></i>Location Information
+              </button>
+            </h2>
+            <div id="collapseLocation" class="accordion-collapse collapse" aria-labelledby="headingLocation" data-bs-parent="#propertyAccordion">
+              <div class="accordion-body">
+                <p class="mb-3">This property is located in <strong><%= property.location %></strong>.</p>
+                <div class="ratio ratio-16x9 rounded-3 overflow-hidden mb-3">
+                  <% 
+                    let mapSrc = '';
+                    if (property.locationMapUrl) {
+                      // Handle different Google Maps URL formats
+                      if (property.locationMapUrl.includes('maps.app.goo.gl') || property.locationMapUrl.includes('goo.gl/maps')) {
+                        // For shortened URLs, convert to embedded format
+                        mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&output=embed`;
+                      } else if (property.locationMapUrl.includes('google.com/maps')) {
+                        // For full URLs, convert to embedded format
+                        let url = property.locationMapUrl;
+                        
+                        // Extract the place ID or coordinates if present
+                        let placeIdMatch = url.match(/place\/[^\/]+\/([^\/\?]+)/);
+                        let coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                        
+                        if (placeIdMatch && placeIdMatch[1]) {
+                          mapSrc = `https://www.google.com/maps/embed/v1/place?key=&q=place_id:${placeIdMatch[1]}`;
+                        } else if (coordsMatch && coordsMatch.length >= 3) {
+                          mapSrc = `https://maps.google.com/maps?q=${coordsMatch[1]},${coordsMatch[2]}&z=15&output=embed`;
+                        } else if (url.includes('?q=')) {
+                          mapSrc = url.replace('?q=', '?q=').replace('maps', 'maps/embed') + '&output=embed';
+                        } else {
+                          mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&output=embed`;
+                        }
+                      } else {
+                        mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&output=embed`;
+                      }
+                    } else {
+                      mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&output=embed`;
+                    }
+                  %>
+                  <iframe 
+                    src=""
+                    data-src="<%= mapSrc %>"
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    class="w-100 h-100 border-0">
+                  </iframe>
+                </div>
+                <div class="d-grid gap-2">
+                  <% if (property.locationMapUrl) { %>
+                    <a href="<%= property.locationMapUrl %>" target="_blank" class="btn btn-outline-warning property-action-btn">
+                      <i class="bi bi-map me-2"></i>View on Google Maps
+                    </a>
+                  <% } else { %>
+                    <a href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(property.location) %>" target="_blank" class="btn btn-outline-warning property-action-btn">
+                      <i class="bi bi-map me-2"></i>View on Google Maps
+                    </a>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Features Section -->
+          <div class="accordion-item border-0">
+            <h2 class="accordion-header" id="headingFeatures">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFeatures" aria-expanded="false" aria-controls="collapseFeatures">
+                <i class="bi bi-star me-2"></i>Property Features
+              </button>
+            </h2>
+            <div id="collapseFeatures" class="accordion-collapse collapse" aria-labelledby="headingFeatures" data-bs-parent="#propertyAccordion">
+              <div class="accordion-body">
+                <div class="row g-3">
+                  <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-lightning-charge text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Power Backup</h6>
+                        <p class="mb-0 text-muted">Full backup available</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-car-front text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Parking</h6>
+                        <p class="mb-0 text-muted">2 dedicated spots</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-wifi text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Internet</h6>
+                        <p class="mb-0 text-muted">High-speed fiber ready</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-tree text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Garden</h6>
+                        <p class="mb-0 text-muted">Private garden area</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-shield-check text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Security</h6>
+                        <p class="mb-0 text-muted">24/7 security available</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-droplet text-warning"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-0">Water Supply</h6>
+                        <p class="mb-0 text-muted">24/7 water availability</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Property Info Card -->
+      <div class="col-lg-4 animate__animated animate__fadeInRight price-card-wrapper">
+        <!-- Price Card -->
+        <div class="card border-0 shadow-sm rounded-3 mb-4 price-card-sticky" id="priceCard">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="fw-bold text-warning mb-0">₹<%= property.price.toLocaleString() %></h3>
+              <span class="badge bg-warning rounded-pill px-3 py-2 text-dark">
+                <i class="bi bi-patch-check-fill me-1"></i>
+                Verified
+              </span>
+            </div>
+            
+            <!-- Property Features -->
+            <div class="mb-4">
+              <h5 class="fw-bold mb-3">Property Features</h5>
+              <div class="d-flex flex-wrap">
+                <span class="badge-feature"><i class="bi bi-building me-2"></i><%= property.bedrooms %> Bedrooms</span>
+                <span class="badge-feature"><i class="bi bi-water me-2"></i><%= property.bathrooms %> Bathrooms</span>
+                <span class="badge-feature"><i class="bi bi-rulers me-2"></i><%= property.squareFeet %> Sq Ft</span>
+              </div>
+            </div>
+            
+            <!-- Contact CTA -->
+            <div class="d-grid gap-2">
+              <a href="#sellerInfo" class="btn btn-warning py-3 property-action-btn">
+                <i class="bi bi-telephone-fill me-2"></i>Contact Seller
+              </a>
+              <% if (locals.user && locals.user.role === 'buyer') { %>
+                <% if (isFavourite) { %>
+                  <form action="/buyer/favourites/remove/<%= property._id %>" method="POST">
+                    <button type="submit" class="btn btn-outline-danger py-3 property-action-btn w-100">
+                      <i class="bi bi-bookmark-x me-2"></i>Remove from Favourites
+                    </button>
+                  </form>
+                <% } else { %>
+                  <form action="/buyer/favourites/add/<%= property._id %>" method="POST">
+                    <button type="submit" class="btn btn-outline-warning py-3 property-action-btn w-100">
+                      <i class="bi bi-bookmark-heart me-2"></i>Save to Favourites
+                    </button>
+                  </form>
+                <% } %>
+              <% } else { %>
+              <button class="btn btn-outline-warning py-3 property-action-btn" onclick="saveProperty()">
+                <i class="bi bi-bookmark-heart me-2"></i>Save Property
+              </button>
+              <% } %>
+              <button class="btn btn-outline-secondary py-3 property-action-btn" onclick="shareProperty()">
+                <i class="bi bi-share-fill me-2"></i>Share Property
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Seller Info -->
+        <div id="sellerInfo" class="card border-0 shadow-sm rounded-3 animate__animated animate__fadeIn mt-5">
+          <div class="card-header bg-white py-3 border-0">
+            <h4 class="fw-bold mb-0">
+              <i class="bi bi-person-circle me-2 text-warning"></i>Seller Information
+            </h4>
+          </div>
+          <div class="card-body p-4">
+            <div class="text-center mb-4">
+              <div class="seller-icon mb-3">
+                <i class="bi bi-person-circle"></i>
+              </div>
+              <h5 class="fw-bold"><%= seller.name %></h5>
+              <span class="badge bg-warning px-3 py-2 rounded-pill text-dark">
+                <i class="bi bi-patch-check-fill me-1"></i>Verified Seller
+              </span>
+            </div>
+            
+            <div class="mb-3">
+              <div class="d-flex align-items-center mb-3">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                  <i class="bi bi-envelope text-warning"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Email</h6>
+                  <p class="mb-0"><%= seller.email %></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                  <i class="bi bi-telephone text-warning"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Phone</h6>
+                  <p class="mb-0"><%= seller.phone %></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2 mt-4">
+              <a href="mailto:<%= seller.email %>" class="btn btn-outline-warning property-action-btn">
+                <i class="bi bi-envelope-fill me-2"></i>Send Email
+              </a>
+              <a href="tel:<%= seller.phone %>" class="btn btn-outline-warning property-action-btn">
+                <i class="bi bi-telephone-fill me-2"></i>Call Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Gallery Lightbox -->
+  <div class="gallery-overlay" id="galleryOverlay">
+    <div class="gallery-close" onclick="closeGallery()">
+      <i class="bi bi-x-circle-fill"></i>
+    </div>
+    <div class="gallery-prev" onclick="prevImage()">
+      <i class="bi bi-chevron-left"></i>
+    </div>
+    <div class="gallery-content" id="galleryContent">
+      <!-- Image will be inserted here -->
+    </div>
+    <div class="gallery-next" onclick="nextImage()">
+      <i class="bi bi-chevron-right"></i>
+    </div>
+  </div>
+
+  <!-- Back Button - Adding to bottom left -->
+  <div class="container mb-4 mt-5">
+    <div class="row">
+      <div class="col-md-6">
+        <a href="/property/listings" class="btn btn-outline-secondary rounded-pill px-4 back-btn">
+          <i class="bi bi-arrow-left me-2"></i>Back to Listings
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-4 bg-dark text-white mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <h5 class="mb-3">SecureDwell</h5>
+          <p class="mb-0">Secure and verified properties across Telangana.</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">&copy; <%= new Date().getFullYear() %> SecureDwell. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Property Map JS -->
+  <script src="/js/property-map.js"></script>
+  
+  <script>
+    // Variables for gallery
+    let currentImageIndex = 0;
+    const images = [
+      <% if (property.images && property.images.length > 0) { %>
+        <% property.images.forEach((img, index) => { %>
+          '<%= img %>'<%= index < property.images.length - 1 ? ',' : '' %>
+        <% }) %>
+      <% } %>
+    ];
+    
+    // Show specific image in carousel
+    function showImage(index) {
+      const carousel = new bootstrap.Carousel(document.getElementById('propertyCarousel'));
+      carousel.to(index);
+      
+      // Update active thumbnail
+      document.querySelectorAll('.image-thumbnail').forEach((thumb, i) => {
+        if (i === index) {
+          thumb.classList.add('active');
+        } else {
+          thumb.classList.remove('active');
+        }
+      });
+    }
+    
+    // Open fullscreen gallery
+    function openGallery(index) {
+      currentImageIndex = index;
+      const overlay = document.getElementById('galleryOverlay');
+      const content = document.getElementById('galleryContent');
+      
+      content.innerHTML = `<img src="${images[index]}" alt="Property Image" class="animate__animated animate__fadeIn">`;
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Close fullscreen gallery
+    function closeGallery() {
+      const overlay = document.getElementById('galleryOverlay');
+      overlay.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Navigate to previous image
+    function prevImage() {
+      currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+      const content = document.getElementById('galleryContent');
+      content.innerHTML = `<img src="${images[currentImageIndex]}" alt="Property Image" class="animate__animated animate__fadeIn">`;
+    }
+    
+    // Navigate to next image
+    function nextImage() {
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+      const content = document.getElementById('galleryContent');
+      content.innerHTML = `<img src="${images[currentImageIndex]}" alt="Property Image" class="animate__animated animate__fadeIn">`;
+    }
+    
+    // Add property to favorites (placeholder)
+    function saveProperty() {
+      // Show toast notification
+      showToast('Property saved to favorites!');
+      
+      // This is just a placeholder - actual implementation would depend on your backend
+    }
+    
+    // Share property (placeholder)
+    function shareProperty() {
+      // Show a native share dialog if available, otherwise fallback to copy link
+      if (navigator.share) {
+        navigator.share({
+          title: '<%= property.title %>',
+          text: 'Check out this property on SecureDwell',
+          url: window.location.href
+        })
+        .catch(error => console.log('Error sharing:', error));
+      } else {
+        // Copy link to clipboard
+        navigator.clipboard.writeText(window.location.href)
+          .then(() => {
+            showToast('Link copied to clipboard!');
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+          });
+      }
+    }
+    
+    // Show toast notification
+    function showToast(message) {
+      // Create toast element
+      const toastEl = document.createElement('div');
+      toastEl.className = 'position-fixed bottom-0 end-0 p-3';
+      toastEl.style.zIndex = '5';
+      
+      toastEl.innerHTML = `
+        <div class="toast show align-items-center text-dark bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              <i class="bi bi-check-circle-fill me-2"></i>${message}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(toastEl);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toastEl.remove();
+      }, 3000);
+    }
+    
+    // Add keyboard navigation for gallery
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('galleryOverlay').style.display === 'flex') {
+        if (e.key === 'ArrowLeft') {
+          prevImage();
+        } else if (e.key === 'ArrowRight') {
+          nextImage();
+        } else if (e.key === 'Escape') {
+          closeGallery();
+        }
+      }
+    });
+    
+    // Fix for sticky card overlapping seller info
+    document.addEventListener('DOMContentLoaded', function() {
+      const priceCard = document.getElementById('priceCard');
+      const sellerInfo = document.getElementById('sellerInfo');
+      
+      function updatePriceCardPosition() {
+        if (!priceCard || !sellerInfo) return;
+        
+        const priceCardRect = priceCard.getBoundingClientRect();
+        const sellerInfoRect = sellerInfo.getBoundingClientRect();
+        
+        if (sellerInfoRect.top - priceCardRect.height < 40 && sellerInfoRect.top > 0) {
+          priceCard.classList.remove('price-card-sticky');
+          priceCard.classList.add('price-card-relative');
+        } else {
+          priceCard.classList.add('price-card-sticky');
+          priceCard.classList.remove('price-card-relative');
+        }
+      }
+      
+      window.addEventListener('scroll', updatePriceCardPosition);
+      window.addEventListener('resize', updatePriceCardPosition);
+      updatePriceCardPosition(); // Initialize on load
+    });
+  </script>
+</body>
+</html>

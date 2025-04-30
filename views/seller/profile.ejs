@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Profile - SecureDwell</title>
+  <%- include('../partials/header') %>
+</head>
+<body class="bg-light">
+  <%- include('../partials/navbar') %>
+
+  <div class="container py-5">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-4 col-lg-3 mb-4 animate__animated animate__fadeIn">
+        <div class="card border-0 shadow-sm rounded-3">
+          <div class="card-body p-4">
+            <div class="text-center mb-4">
+              <div class="avatar-circle mx-auto mb-3">
+                <i class="bi bi-person-circle display-1 text-primary"></i>
+              </div>
+              <h5 class="fw-bold mb-1"><%= seller.name %></h5>
+              <span class="badge bg-primary px-3 py-2 rounded-pill">Seller</span>
+            </div>
+            
+            <div class="list-group list-group-flush mt-4">
+              <a href="/seller/dashboard" class="list-group-item list-group-item-action py-3">
+                <i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard
+              </a>
+              <a href="/seller/profile" class="list-group-item list-group-item-action py-3 active">
+                <i class="bi bi-person me-2"></i>My Profile
+              </a>
+              <a href="/seller/add-property" class="list-group-item list-group-item-action py-3">
+                <i class="bi bi-plus-circle me-2 text-primary"></i>Add Property
+              </a>
+              <a href="/seller/listed-properties" class="list-group-item list-group-item-action py-3">
+                <i class="bi bi-houses me-2 text-primary"></i>My Properties
+              </a>
+              <a href="/logout" class="list-group-item list-group-item-action py-3">
+                <i class="bi bi-box-arrow-right me-2 text-primary"></i>Logout
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Profile Content -->
+      <div class="col-md-8 col-lg-9 animate__animated animate__fadeInRight">
+        <div class="card border-0 shadow-sm rounded-3">
+          <div class="card-header bg-white py-3 border-0">
+            <h4 class="fw-bold mb-0">
+              <i class="bi bi-person-circle me-2 text-primary"></i>My Seller Profile
+            </h4>
+          </div>
+          <div class="card-body p-4">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="card border rounded-3 mb-4 hover-card">
+                  <div class="card-body">
+                    <h5 class="fw-bold mb-3">Personal Information</h5>
+                    <div class="mb-3">
+                      <div class="d-flex">
+                        <div class="contact-icon me-3">
+                          <i class="bi bi-person text-primary"></i>
+                        </div>
+                        <div>
+                          <div class="text-muted small">Full Name</div>
+                          <div class="fw-semibold"><%= seller.name %></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <div class="d-flex">
+                        <div class="contact-icon me-3">
+                          <i class="bi bi-envelope text-primary"></i>
+                        </div>
+                        <div>
+                          <div class="text-muted small">Email Address</div>
+                          <div class="fw-semibold"><%= seller.email %></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <div class="d-flex">
+                        <div class="contact-icon me-3">
+                          <i class="bi bi-telephone text-primary"></i>
+                        </div>
+                        <div>
+                          <div class="text-muted small">Phone Number</div>
+                          <div class="fw-semibold"><%= seller.phone %></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-0">
+                      <div class="d-flex">
+                        <div class="contact-icon me-3">
+                          <i class="bi bi-person-badge text-primary"></i>
+                        </div>
+                        <div>
+                          <div class="text-muted small">Account Type</div>
+                          <div class="fw-semibold"><%= seller.role.charAt(0).toUpperCase() + seller.role.slice(1) %></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                  
+                
+                </div>
+              </div>
+              
+              <div class="col-md-4 mt-4 mt-md-0">
+                <div class="card border rounded-3 mb-4 hover-card">
+                  <div class="card-body">
+                    <h5 class="fw-bold mb-3">Account Status</h5>
+                    <div class="alert alert-success mb-3">
+                      <i class="bi bi-check-circle-fill me-2"></i>Verified
+                    </div>
+                    <p class="text-muted small mb-0">Your account has been verified and you can list properties for sale.</p>
+                  </div>
+                </div>
+                
+                <div class="card border rounded-3 hover-card">
+                  <div class="card-body text-center">
+                    <h5 class="fw-bold mb-3">Quick Actions</h5>
+                    <a href="/seller/add-property" class="btn btn-primary w-100 mb-2 hover-transform">
+                      <i class="bi bi-plus-circle me-2"></i>Add Property
+                    </a>
+                    <a href="/seller/listed-properties" class="btn btn-outline-primary w-100 hover-transform">
+                      <i class="bi bi-houses me-2"></i>View My Properties
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="py-4 bg-dark text-white mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <h5 class="mb-3 text-primary">SecureDwell</h5>
+          <p class="mb-0">Secure and verified properties across Telangana.</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">&copy; <%= new Date().getFullYear() %> SecureDwell. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <%- include('../partials/footer-scripts') %>
+</body>
+</html>

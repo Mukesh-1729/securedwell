@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - SecureDwell</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/css/modern-theme.css">
+  <style>
+    body {
+      background-color: var(--gray-100);
+    }
+    
+    .card {
+      border: none;
+      border-radius: var(--border-radius-lg);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .card-body {
+      padding: 2.5rem;
+    }
+    
+    .text-primary {
+      color: var(--primary) !important;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary) !important;
+      border-color: var(--primary) !important;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark) !important;
+      border-color: var(--primary-dark) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    
+    .form-check-input:checked {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .input-group-text {
+      background-color: transparent;
+      color: var(--primary);
+      border-right: none;
+    }
+    
+    .form-control {
+      border-left: none;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 0.25);
+    }
+    
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 0.25);
+    }
+    
+    .password-toggle {
+      cursor: pointer;
+      background-color: transparent;
+      border-left: none;
+      transition: color 0.3s ease;
+    }
+    
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+    
+    .error-message {
+      color: var(--danger);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .error-message.active {
+      display: block;
+    }
+    
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+    
+    footer {
+      background: linear-gradient(135deg, #2d3748, #1a202c) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <%- include('../partials/navbar') %>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-lg rounded-3">
+          <div class="card-body">
+            <div class="text-center mb-4">
+              <div class="rounded-circle bg-light d-inline-flex p-3 mb-3">
+                <i class="bi bi-person-plus-fill text-primary" style="font-size: 2.5rem;"></i>
+              </div>
+              <h2 class="fw-bold mt-3">Create Your Account</h2>
+              <p class="text-muted">Join SecureDwell to start browsing or listing properties</p>
+            </div>
+            
+            <form id="registerForm" action="/register" method="POST" novalidate>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="name" class="form-label">Full Name</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Your full name" required>
+                  </div>
+                  <small id="nameError" class="error-message">Name is required</small>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Email Address</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Your email address" required>
+                  </div>
+                  <small id="emailError" class="error-message">Enter a valid gmail address (example@gmail.com)</small>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="Your phone number" required>
+                </div>
+                <small id="phoneError" class="error-message">Phone number must be exactly 10 digits</small>
+              </div>
+              
+              <div class="mb-3">
+                <label for="role" class="form-label">I want to</label>
+                <select class="form-select" id="role" name="role" required>
+                  <option value="" disabled selected>Select your role</option>
+                  <option value="buyer">Buyer</option>
+                  <option value="seller">Seller</option>
+                </select>
+                <small id="roleError" class="error-message">Please select a role</small>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                    <span class="input-group-text password-toggle" data-target="password">
+                      <i class="bi bi-eye-slash"></i>
+                    </span>
+                  </div>
+                  <small id="passwordError" class="error-message">Password must be at least 6 characters</small>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    <span class="input-group-text password-toggle" data-target="confirmPassword">
+                      <i class="bi bi-eye-slash"></i>
+                    </span>
+                  </div>
+                  <small id="confirmPasswordError" class="error-message">Passwords do not match</small>
+                </div>
+              </div>
+              
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                <label class="form-check-label" for="termsCheck">
+                  I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </label>
+                <small id="termsError" class="error-message d-block">You must agree to the terms</small>
+              </div>
+              
+              <div class="d-grid mb-4">
+                <button type="submit" id="submitBtn" class="btn btn-primary py-3" disabled>
+                  <i class="bi bi-person-plus me-2"></i>Create Account
+                </button>
+              </div>
+              
+              <div class="text-center">
+                <p class="mb-0">Already have an account? <a href="/login">Login here</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-4 text-white mt-auto">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <h5 class="mb-3">SecureDwell</h5>
+          <p class="mb-0">Secure and verified properties across Telangana.</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">&copy; <%= new Date().getFullYear() %> SecureDwell. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Get DOM elements
+    const registerForm = document.getElementById('registerForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const roleInput = document.getElementById('role');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const termsCheck = document.getElementById('termsCheck');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Get error elements
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const phoneError = document.getElementById('phoneError');
+    const roleError = document.getElementById('roleError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const termsError = document.getElementById('termsError');
+    
+    // Toggle password visibility
+    document.querySelectorAll('.password-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          icon.classList.replace('bi-eye-slash', 'bi-eye');
+        } else {
+          passwordInput.type = 'password';
+          icon.classList.replace('bi-eye', 'bi-eye-slash');
+        }
+      });
+    });
+    
+    // Validation functions
+    function validateName(name) {
+      if (!name.trim()) {
+        nameError.textContent = 'Name is required';
+        return false;
+      }
+
+      if (/^[\s]/.test(name)) {
+        nameError.textContent = 'Name cannot start with a space';
+        return false;
+      }
+
+      if (/^[0-9]/.test(name)) {
+        nameError.textContent = 'Name cannot start with a number';
+        return false;
+      }
+
+      nameError.textContent = '';
+      return true;
+    }
+    
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@gmail\.com$/;
+      if (!emailRegex.test(email)) {
+        emailError.textContent = 'Enter a valid gmail address (example@gmail.com)';
+        return false;
+      }
+      return true;
+    }
+    
+    function validatePhone(phone) {
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(phone)) {
+        phoneError.textContent = 'Phone number must be exactly 10 digits';
+        return false;
+      }
+      return true;
+    }
+    
+    function validateRole(role) {
+      if (role === '' || (role !== 'buyer' && role !== 'seller')) {
+        roleError.textContent = 'Please select a role';
+        return false;
+      }
+      return true;
+    }
+    
+function validatePassword(password) {
+  
+
+  // Strong password regex
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  if (!passwordRegex.test(password)) {
+    passwordError.textContent = 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.';
+    return false;
+  }
+
+  passwordError.textContent = ''; // Clear the error if validation passes
+  return true;
+}
+
+    
+    function validateConfirmPassword(confirmPassword, password) {
+      if (confirmPassword !== password) {
+        confirmPasswordError.textContent = 'Passwords do not match';
+        return false;
+      }
+      return true;
+    }
+    
+    function validateTerms(checked) {
+      if (!checked) {
+        termsError.textContent = 'You must agree to the terms';
+        return false;
+      }
+      return true;
+    }
+    
+    // Helper functions to mark fields as valid/invalid
+    function markAsInvalid(inputElement, errorElement) {
+      inputElement.classList.add('is-invalid');
+      errorElement.classList.add('active');
+    }
+    
+    function markAsValid(inputElement, errorElement) {
+      inputElement.classList.remove('is-invalid');
+      errorElement.classList.remove('active');
+    }
+    
+    // Check if all validations pass
+    function checkAllValidations() {
+      const isNameValid = validateName(nameInput.value);
+      const isEmailValid = validateEmail(emailInput.value);
+      const isPhoneValid = validatePhone(phoneInput.value);
+      const isRoleValid = validateRole(roleInput.value);
+      const isPasswordValid = validatePassword(passwordInput.value);
+      const isConfirmPasswordValid = validateConfirmPassword(confirmPasswordInput.value, passwordInput.value);
+      const isTermsChecked = validateTerms(termsCheck.checked);
+      
+      // Update submit button state
+      submitBtn.disabled = !(isNameValid && isEmailValid && isPhoneValid && isRoleValid && 
+                            isPasswordValid && isConfirmPasswordValid && isTermsChecked);
+    }
+    
+    // Add event listeners for live validation
+    nameInput.addEventListener('input', function() {
+      if (validateName(this.value)) {
+        markAsValid(nameInput, nameError);
+      } else {
+        markAsInvalid(nameInput, nameError);
+      }
+      checkAllValidations();
+    });
+    
+    emailInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        markAsValid(emailInput, emailError);
+      } else if (validateEmail(this.value)) {
+        markAsValid(emailInput, emailError);
+      } else {
+        markAsInvalid(emailInput, emailError);
+      }
+      checkAllValidations();
+    });
+    
+    phoneInput.addEventListener('input', function() {
+      // Remove any non-numeric characters
+      this.value = this.value.replace(/\D/g, '');
+      
+      if (this.value.trim() === '') {
+        markAsValid(phoneInput, phoneError);
+      } else if (validatePhone(this.value)) {
+        markAsValid(phoneInput, phoneError);
+      } else {
+        markAsInvalid(phoneInput, phoneError);
+      }
+      checkAllValidations();
+    });
+    
+    roleInput.addEventListener('change', function() {
+      if (validateRole(this.value)) {
+        markAsValid(roleInput, roleError);
+      } else {
+        markAsInvalid(roleInput, roleError);
+      }
+      checkAllValidations();
+    });
+    
+    passwordInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        markAsValid(passwordInput, passwordError);
+      } else if (validatePassword(this.value)) {
+        markAsValid(passwordInput, passwordError);
+      } else {
+        markAsInvalid(passwordInput, passwordError);
+      }
+      
+      // Also check confirm password since password changed
+      if (confirmPasswordInput.value) {
+        if (validateConfirmPassword(confirmPasswordInput.value, this.value)) {
+          markAsValid(confirmPasswordInput, confirmPasswordError);
+        } else {
+          markAsInvalid(confirmPasswordInput, confirmPasswordError);
+        }
+      }
+      
+      checkAllValidations();
+    });
+    
+    confirmPasswordInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        markAsValid(confirmPasswordInput, confirmPasswordError);
+      } else if (validateConfirmPassword(this.value, passwordInput.value)) {
+        markAsValid(confirmPasswordInput, confirmPasswordError);
+      } else {
+        markAsInvalid(confirmPasswordInput, confirmPasswordError);
+      }
+      checkAllValidations();
+    });
+    
+    termsCheck.addEventListener('change', function() {
+      if (validateTerms(this.checked)) {
+        markAsValid(termsCheck, termsError);
+      } else {
+        markAsInvalid(termsCheck, termsError);
+      }
+      checkAllValidations();
+    });
+    
+    // Form submission validation
+    registerForm.addEventListener('submit', function(event) {
+      let isFormValid = true;
+      
+      // Validate all fields
+      if (!validateName(nameInput.value)) {
+        markAsInvalid(nameInput, nameError);
+        isFormValid = false;
+      }
+      
+      if (!validateEmail(emailInput.value)) {
+        markAsInvalid(emailInput, emailError);
+        isFormValid = false;
+      }
+      
+      if (!validatePhone(phoneInput.value)) {
+        markAsInvalid(phoneInput, phoneError);
+        isFormValid = false;
+      }
+      
+      if (!validateRole(roleInput.value)) {
+        markAsInvalid(roleInput, roleError);
+        isFormValid = false;
+      }
+      
+      if (!validatePassword(passwordInput.value)) {
+        markAsInvalid(passwordInput, passwordError);
+        isFormValid = false;
+      }
+      
+      if (!validateConfirmPassword(confirmPasswordInput.value, passwordInput.value)) {
+        markAsInvalid(confirmPasswordInput, confirmPasswordError);
+        isFormValid = false;
+      }
+      
+      if (!validateTerms(termsCheck.checked)) {
+        markAsInvalid(termsCheck, termsError);
+        isFormValid = false;
+      }
+      
+      // Prevent form submission if validation fails
+      if (!isFormValid) {
+        event.preventDefault();
+      }
+    });
+    
+    // Initialize form validation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set initial state of submit button
+      checkAllValidations();
+      
+      // Add animations to form fields
+      const formFields = document.querySelectorAll('.form-control, .form-select');
+      formFields.forEach((field, index) => {
+        field.style.opacity = '0';
+        field.style.transform = 'translateY(20px)';
+        field.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+          field.style.opacity = '1';
+          field.style.transform = 'translateY(0)';
+        }, 100 + (index * 100));
+      });
+      
+      // Add animation to card
+      const card = document.querySelector('.card');
+      card.classList.add('animate__animated', 'animate__fadeIn');
+    });
+  </script>
+</body>
+</html>

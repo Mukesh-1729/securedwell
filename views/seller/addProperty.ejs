@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Property - SecureDwell</title>
+  <%- include('../partials/header') %>
+</head>
+<body class="bg-light">
+  
+  <%- include('../partials/navbar') %>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Page Header -->
+        <div class="text-center mb-5 animate__animated animate__fadeIn">
+          <h1 class="display-5 fw-bold">Add New Property</h1>
+          <p class="lead text-muted">Fill in the details to list your property on SecureDwell</p>
+        </div>
+        
+        <div class="card border-0 shadow-sm rounded-3 animate__animated animate__fadeInUp">
+          <div class="card-body p-4 p-md-5">
+            <form action="/seller/add-property" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+              <!-- Progress Bar -->
+              <div class="mb-5">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-primary fw-bold">Property Information</span>
+                  <span class="text-muted small">All fields are required</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              
+              <div class="row g-4">
+                <!-- Basic Details Section -->
+                <div class="col-12">
+                  <h5 class="fw-bold mb-3">
+                    <i class="bi bi-house-door me-2 text-primary"></i>
+                    Basic Details
+                  </h5>
+                </div>
+                
+                <!-- Title -->
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" name="title" class="form-control" id="title" placeholder="e.g. 3BHK Villa in Gachibowli" required>
+                    <label for="title">Property Title</label>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <textarea name="description" id="description" class="form-control" style="height: 120px;" placeholder="Enter a brief description of the property..." required></textarea>
+                    <label for="description">Description</label>
+                  </div>
+                </div>
+
+                <!-- Price & Location -->
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="number" name="price" class="form-control" id="price" placeholder="e.g. 8500000" required>
+                    <label for="price">Price (INR)</label>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input type="text" name="location" class="form-control" id="location" placeholder="e.g. Gachibowli, Hyderabad" required>
+                    <label for="location">Location</label>
+                  </div>
+                </div>
+
+                <!-- Location Map URL -->
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="url" name="locationMapUrl" class="form-control" id="locationMapUrl" placeholder="https://maps.google.com/?q=..." aria-describedby="locationMapUrlHelp">
+                    <label for="locationMapUrl">Google Maps URL </label>
+                  </div>
+                  <div id="locationMapUrlHelp" class="form-text mb-3">
+                    <i class="bi bi-info-circle text-primary me-1"></i> Provide a Google Maps URL to help buyers find your property more easily. 
+                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#mapUrlHelpModal">How to get a Google Maps URL?</a>
+                  </div>
+                </div>
+
+                <!-- Property Specifications Section -->
+                <div class="col-12 mt-3">
+                  <h5 class="fw-bold mb-3">
+                    <i class="bi bi-clipboard-data me-2 text-primary"></i>
+                    Property Specifications
+                  </h5>
+                </div>
+                
+                <!-- Bedrooms, Bathrooms, Square Feet -->
+                <div class="col-md-4">
+                  <div class="form-floating mb-3">
+                    <input type="number" name="bedrooms" class="form-control" id="bedrooms" min="1" placeholder="3" required>
+                    <label for="bedrooms">Bedrooms</label>
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <div class="form-floating mb-3">
+                    <input type="number" name="bathrooms" class="form-control" id="bathrooms" min="1" placeholder="2" required>
+                    <label for="bathrooms">Bathrooms</label>
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <div class="form-floating mb-3">
+                    <input type="number" name="squareFeet" class="form-control" id="squareFeet" min="100" placeholder="1200" required>
+                    <label for="squareFeet">Square Feet</label>
+                  </div>
+                </div>
+
+                 <!-- Property Documents Section -->
+  <div class="col-12 mt-3">
+    <h5 class="fw-bold mb-3">
+      <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+      Property Documents
+    </h5>
+  </div>
+
+  <!-- Images -->
+  <div class="col-12">
+    <div class="mb-4">
+      <label for="images" class="form-label fw-semibold">Upload Property Images</label>
+      <div class="input-group mb-2">
+        <span class="input-group-text"><i class="bi bi-images text-primary"></i></span>
+        <input type="file" name="images" id="images" class="form-control" accept="image/*" multiple required>
+      </div>
+      <div class="form-text">You can upload multiple images (JPG, PNG, etc).</div>
+    </div>
+  </div>
+
+  <!-- Land Document -->
+<div class="col-md-6">
+  <div class="mb-4">
+    <label for="landDocument" class="form-label fw-semibold">Land Document (Image)</label>
+    <div class="input-group mb-2">
+      <span class="input-group-text"><i class="bi bi-file-earmark-image text-primary"></i></span>
+      <input type="file" name="landDocument" id="landDocument" class="form-control" accept="image/*" required>
+    </div>
+  </div>
+</div>
+
+<!-- Building Permit -->
+<div class="col-md-6">
+  <div class="mb-4">
+    <label for="permitOrder" class="form-label fw-semibold">Building Permit Order (Image)</label>
+    <div class="input-group mb-2">
+      <span class="input-group-text"><i class="bi bi-file-earmark-image text-primary"></i></span>
+      <input type="file" name="permitOrder" id="permitOrder" class="form-control" accept="image/*" required>
+    </div>
+  </div>
+</div>
+
+              
+              <div class="alert alert-info mt-4 mb-4" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <strong>Note:</strong> All properties will be verified by an admin before being listed on the platform.
+              </div>
+              
+              <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" value="" id="termsCheck" required>
+                <label class="form-check-label" for="termsCheck">
+                  I confirm that all the information provided is accurate and I have the rights to list this property.
+                </label>
+              </div>
+
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/seller/dashboard" class="btn btn-light btn-lg px-5 me-md-2 hover-transform">Cancel</a>
+                <button type="submit" class="btn btn-primary btn-lg px-5 hover-transform">
+                  <i class="bi bi-check2-circle me-2"></i>Submit Property
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="py-4 bg-dark text-white mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <h5 class="mb-3 text-primary">SecureDwell</h5>
+          <p class="mb-0">Secure and verified properties across Telangana.</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">&copy; <%= new Date().getFullYear() %> SecureDwell. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Map URL Help Modal -->
+  <div class="modal fade" id="mapUrlHelpModal" tabindex="-1" aria-labelledby="mapUrlHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title" id="mapUrlHelpModalLabel">
+            <i class="bi bi-map me-2 text-primary"></i>How to Get a Google Maps URL
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Follow these simple steps to get a Google Maps URL for your property:</p>
+          
+          <div class="card mb-3">
+            <div class="card-body">
+              <h6 class="fw-bold"><i class="bi bi-1-circle-fill me-2 text-primary"></i>Go to Google Maps</h6>
+              <p>Visit <a href="https://maps.google.com" target="_blank">maps.google.com</a> in your web browser.</p>
+            </div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-body">
+              <h6 class="fw-bold"><i class="bi bi-2-circle-fill me-2 text-primary"></i>Find Your Property's Location</h6>
+              <p>Search for your property's exact address or drop a pin on your property location. Zoom in as close as possible for better accuracy.</p>
+              <div class="alert alert-success">
+                <i class="bi bi-geo-alt me-2"></i>Tip: For best results, zoom in as close as possible and make sure the pin is on your exact property.
+              </div>
+            </div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-body">
+              <h6 class="fw-bold"><i class="bi bi-3-circle-fill me-2 text-primary"></i>Get the URL</h6>
+              <p>Click the "Share" button <i class="bi bi-share text-primary"></i> in the left sidebar and copy the link.</p>
+              <div class="row mb-3">
+                <div class="col-md-6 text-center">
+                  <div class="border rounded p-2 mb-2">
+                    <img src="https://i.imgur.com/8wKjfEF.png" alt="Google Maps Share Button" class="img-fluid rounded" style="max-width: 100%;">
+                  </div>
+                  <small class="text-muted">Click the Share button</small>
+                </div>
+                <div class="col-md-6 text-center">
+                  <div class="border rounded p-2 mb-2">
+                    <img src="https://i.imgur.com/G7YTaQV.png" alt="Copy Link" class="img-fluid rounded" style="max-width: 100%;">
+                  </div>
+                  <small class="text-muted">Copy the link</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-body">
+              <h6 class="fw-bold"><i class="bi bi-4-circle-fill me-2 text-primary"></i>Paste the URL</h6>
+              <p>Paste the copied URL into the "Google Maps URL" field on the form.</p>
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>No API key is required! Our system automatically converts the URL you provide into an embeddable map that appears on your property listing.
+              </div>
+            </div>
+          </div>
+          
+          <div class="alert alert-warning mt-4">
+            <i class="bi bi-lightbulb-fill me-2"></i>
+            <strong>Important:</strong> Any of these URL formats will work:
+            <ul class="mb-0 mt-2">
+              <li><code>https://maps.app.goo.gl/...</code> (from mobile sharing)</li>
+              <li><code>https://goo.gl/maps/...</code> (shortened URL)</li>
+              <li><code>https://www.google.com/maps?q=...</code> (search URL)</li>
+              <li><code>https://www.google.com/maps/place/...</code> (place URL)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got It</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer-scripts') %>
+  <script>
+    // Form validation script
+    (function () {
+      'use strict'
+      
+      // Fetch all forms we want to apply validation to
+      var forms = document.querySelectorAll('.needs-validation')
+      
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+  </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Details - Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --gold-primary: #D4AF37;
+      --gold-secondary: #CFB53B;
+      --gold-light: #F8F4E3;
+      --gold-dark: #85754d;
+      --dark-bg: #1E1E2E;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+    }
+    
+    .sidebar {
+      height: 100vh;
+      background: linear-gradient(135deg, var(--dark-bg) 0%, #2D2D44 100%);
+      color: #fff;
+      padding-top: 20px;
+      min-width: 250px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar h3 {
+      color: var(--gold-primary);
+      font-weight: bold;
+      padding: 0 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar .nav-link {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 0.5rem;
+      margin: 0.2rem 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover, .sidebar .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--gold-primary);
+      transform: translateX(5px);
+    }
+
+    .sidebar .nav-link i {
+      margin-right: 0.5rem;
+      color: var(--gold-primary);
+    }
+
+    .content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .text-gold {
+      color: var(--gold-primary) !important;
+    }
+    
+    .badge-gold {
+      background-color: var(--gold-primary);
+      color: white;
+    }
+    
+    .carousel-item img {
+      height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    
+    .document-preview {
+      height: 300px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .preview-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f9fa;
+      padding: 2rem;
+      height: 100%;
+      text-align: center;
+    }
+    
+    .preview-placeholder i {
+      font-size: 3rem;
+      color: var(--gold-primary);
+      margin-bottom: 1rem;
+    }
+    
+    .thumbnail-gallery {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 0;
+    }
+    
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    
+    .thumbnail:hover, .thumbnail.active {
+      border-color: var(--gold-primary);
+      transform: scale(1.05);
+    }
+    
+    .action-buttons {
+      position: sticky;
+      bottom: 0;
+      background-color: white;
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      margin-top: 2rem;
+      box-shadow: 0 -5px 10px rgba(0,0,0,0.05);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar p-3 animate__animated animate__fadeInLeft">
+      <h3><i class="bi bi-shield-lock me-2"></i>Admin</h3>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="/admin/dashboard">
+            <i class="bi bi-list-check"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/logout">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content w-100">
+      <div class="container animate__animated animate__fadeIn">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="text-gold">
+            <i class="bi bi-building me-2"></i>Property Details
+          </h1>
+          <a href="/admin/dashboard" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+          </a>
+        </div>
+        
+        <div class="row g-4">
+          <!-- Property Images -->
+          <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title text-gold mb-3">
+                  <i class="bi bi-images me-2"></i>Property Images
+                </h5>
+                
+                <% if (property.images && property.images.length > 0) { %>
+                  <div id="propertyImagesCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                      <% property.images.forEach((image, index) => { %>
+                        <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                          <img src="<%= image %>" class="d-block w-100" alt="Property Image <%= index + 1 %>">
+                        </div>
+                      <% }) %>
+                    </div>
+                    <% if (property.images.length > 1) { %>
+                      <button class="carousel-control-prev" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                      </button>
+                      <button class="carousel-control-next" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                      </button>
+                    <% } %>
+                  </div>
+                  
+                  <!-- Thumbnails Gallery -->
+                  <div class="thumbnail-gallery">
+                    <% property.images.forEach((image, index) => { %>
+                      <img src="<%= image %>" 
+                           class="thumbnail <%= index === 0 ? 'active' : '' %>" 
+                           alt="Thumbnail <%= index + 1 %>"
+                           onclick="showImage(<%= index %>)">
+                    <% }) %>
+                  </div>
+                <% } else { %>
+                  <div class="preview-placeholder">
+                    <i class="bi bi-camera"></i>
+                    <p>No images available for this property.</p>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+            
+            <!-- Property Details -->
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title text-gold mb-3">
+                  <i class="bi bi-info-circle me-2"></i>Property Information
+                </h5>
+                
+                <h3><%= property.title %></h3>
+                
+                <div class="d-flex flex-wrap align-items-center mb-3">
+                  <span class="badge bg-<%= property.status === 'Approved' ? 'success' : property.status === 'Rejected' ? 'danger' : 'warning' %> p-2 me-2">
+                    <i class="bi bi-<%= property.status === 'Approved' ? 'check-circle' : property.status === 'Rejected' ? 'x-circle' : 'clock' %> me-1"></i>
+                    <%= property.status %>
+                  </span>
+                  <p class="text-secondary mb-0 ms-2">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    <%= property.location %>
+                  </p>
+                </div>
+                
+                <h4 class="text-gold mb-3">₹<%= property.price.toLocaleString() %></h4>
+                
+                <p class="mb-4"><%= property.description %></p>
+                
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="card bg-light">
+                      <div class="card-body text-center py-3">
+                        <i class="bi bi-building text-gold mb-2" style="font-size: 1.5rem;"></i>
+                        <h5><%= property.bedrooms %></h5>
+                        <p class="text-muted mb-0">Bedrooms</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card bg-light">
+                      <div class="card-body text-center py-3">
+                        <i class="bi bi-water text-gold mb-2" style="font-size: 1.5rem;"></i>
+                        <h5><%= property.bathrooms %></h5>
+                        <p class="text-muted mb-0">Bathrooms</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card bg-light">
+                      <div class="card-body text-center py-3">
+                        <i class="bi bi-rulers text-gold mb-2" style="font-size: 1.5rem;"></i>
+                        <h5><%= property.squareFeet %></h5>
+                        <p class="text-muted mb-0">Square Feet</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Sidebar Info -->
+          <div class="col-lg-4">
+            <!-- Seller Information -->
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title text-gold mb-3">
+                  <i class="bi bi-person me-2"></i>Seller Information
+                </h5>
+                
+                <% if (property.seller) { %>
+                  <div class="text-center mb-3">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                      <i class="bi bi-person-circle" style="font-size: 3rem; color: var(--gold-primary);"></i>
+                    </div>
+                    <h5 class="mb-0"><%= property.seller.name %></h5>
+                  </div>
+                  
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <i class="bi bi-envelope text-gold me-2"></i>
+                      <%= property.seller.email %>
+                    </li>
+                    <li class="list-group-item">
+                      <i class="bi bi-telephone text-gold me-2"></i>
+                      <%= property.seller.phone %>
+                    </li>
+                  </ul>
+                <% } else { %>
+                  <p>Seller information not available.</p>
+                <% } %>
+              </div>
+            </div>
+            
+           <!-- Land Document -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title text-gold mb-3">
+      <i class="bi bi-file-earmark-text me-2"></i>Land Document
+    </h5>
+
+    <% if (property.landDocument) { %>
+      <div class="document-preview">
+        <img src="<%= property.landDocument %>" class="w-100" style="object-fit: contain; max-height: 600px;" alt="Land Document">
+      </div>
+      <div class="mt-3">
+        <a href="<%= property.landDocument %>" class="btn btn-outline-primary w-100" target="_blank">
+          <i class="bi bi-download me-2"></i>View Full Document
+        </a>
+      </div>
+    <% } else { %>
+      <div class="preview-placeholder text-center">
+        <i class="bi bi-file-earmark-x display-4"></i>
+        <p class="mt-2">No land document available.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Permit Order -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title text-gold mb-3">
+      <i class="bi bi-file-earmark-check me-2"></i>Permit Order
+    </h5>
+
+    <% if (property.permitOrder) { %>
+      <div class="document-preview">
+        <img src="<%= property.permitOrder %>" class="w-100" style="object-fit: contain; max-height: 600px;" alt="Permit Order">
+      </div>
+      <div class="mt-3">
+        <a href="<%= property.permitOrder %>" class="btn btn-outline-primary w-100" target="_blank">
+          <i class="bi bi-download me-2"></i>View Full Document
+        </a>
+      </div>
+    <% } else { %>
+      <div class="preview-placeholder text-center">
+        <i class="bi bi-file-earmark-x display-4"></i>
+        <p class="mt-2">No permit order available.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Function to show image in carousel
+    function showImage(index) {
+      const carousel = bootstrap.Carousel.getInstance(document.getElementById('propertyImagesCarousel'));
+      carousel.to(index);
+      
+      // Update active thumbnail
+      document.querySelectorAll('.thumbnail').forEach((thumb, idx) => {
+        if (idx === index) {
+          thumb.classList.add('active');
+        } else {
+          thumb.classList.remove('active');
+        }
+      });
+    }
+    
+    // Event listener for carousel changes
+    document.addEventListener('DOMContentLoaded', function() {
+      const carousel = document.getElementById('propertyImagesCarousel');
+      if (carousel) {
+        carousel.addEventListener('slid.bs.carousel', function(event) {
+          const activeIndex = parseInt(event.to);
+          
+          // Update active thumbnail
+          document.querySelectorAll('.thumbnail').forEach((thumb, idx) => {
+            if (idx === activeIndex) {
+              thumb.classList.add('active');
+            } else {
+              thumb.classList.remove('active');
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html> 
